@@ -5,6 +5,38 @@
   <!-- Header here -->
   <head>
     <title> Cross Device Clipboard </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Some basic styles tags for mobile use -->
+    <style>
+      body {
+        font-family: sans-serif;
+        padding: 1em;
+        max-width: 600px;
+        margin: auto;
+      }
+
+      h1 {
+        font-size: 1.5em;
+        text-align: center;
+      }
+
+      textarea, input {
+        width: 100%;
+        font-size: 1em;
+        padding: 0.75em;
+        margin-top: 1em;
+        box-sizing: border-box;
+      }
+
+      button {
+        font-size: 1em;
+        padding: 1em;
+        margin: 0.5em 0;
+        width: 100%;
+      }
+    </style>
+
   </head>
 
   <!-- Body here -->
@@ -18,7 +50,8 @@
     <!-- Buttons for sending and recieving-->
     <button id="sendBtn">Send Text</button>
     <button id="getBtn">Get Text</button>
-
+    <button id="copyBtn">Copy Text</button>
+    <button id="pasteBtn">Paste into Input</button>
 
     <!-- Script here -->
     <script>
@@ -63,6 +96,16 @@
           textInput.value = ""; // clear field on failure
         }        
       };
+
+      pasteBtn.onclick = async function(){
+        const text = await navigator.clipboard.readText();
+        textInput.value = text;
+      };
+
+      copyBtn.onclick = async function(){
+        const text = textInput.value;
+        await navigator.clipboard.writeText(text);
+      }
       
     </script>
     
