@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+
+  <!-- Header here -->
+  <head>
+    <title> Cross Device Clipboard </title>
+  </head>
+
+  <!-- Body here -->
+  <body>
+    <h1>Cross Device Clipboard</h1>
+
+    <!-- Two text input fields, one for long values like pasting lots of text, and one for a send and recieve code -->
+    <textarea id="textInput" rows=6 cols=40></textarea>
+    <input id="codeInput" placeholder="Enter code here">
+
+    <!-- Buttons for sending and recieving-->
+    <button id="sendBtn">Send Text</button>
+    <button id="getBtn">Get Text</button>
+
+
+    <!-- Script here -->
+    <script>
+      const textInput = document.getElementById("textInput");
+      const codeInput = document.getElementById("codeInput");
+      const sendBtn = document.getElementById("sendBtn");
+      const getBtn = document.getElementById("getBtn")
+
+      //ON SEND BUTTON CLICK: sending data to backend
+      sendBtn.onclick = async function(){
+        const code = codeInput.value;
+        const text = textInput.value;
+
+        //send the data to the backend using fetch API
+        const response = await fetch("/send", {
+          method: "POST",
+          headers: {
+            "Content-Type" : "application/json" // < must be set to json; backend wont accept javascript object
+          }, 
+          body: JSON.stringify({code, text}) // < do the actual translation from javascript object to json
+        });
+
+        const result = await response.json(); // < sets a variable to the server's response
+        console.log("Server response: ", result);
+      };
+
+      //ON GET BUTTON CLICK: getting data from backend
+      getBtn.onclick = async function(){
+        const code = codeInput.value;
+
+        //get the data from the backend using fetch API
+        const response = await fetch(`/get?code=${code}`);
+
+        // Parse the response as JSON
+        const result = await response.json();
+
+        // as long as it's a success, update the text box with the response
+        if(result.success){
+          textInput.value = result.text;
+        } else {
+          console.log("Error: ", result.message);
+          textInput.value = ""; // clear field on failure
+        }        
+      };
+      
+    </script>
+    
+  </body>
+
+  
+</html>
